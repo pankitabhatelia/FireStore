@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">FireStore</string>
+    <string name="log_out">Log Out</string>
+    <string name="sign_in">Sign In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="continue_with_google">Continue With Google</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="already_have_an_account">Already have an account?</string>
 </resources>

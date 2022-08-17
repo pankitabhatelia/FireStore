@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     }
     override fun onStart() {
         super.onStart()
-        val user: FirebaseUser? = auth?.currentUser
+        val user: FirebaseUser? = auth.currentUser
         user?.let {
             startActivity(Intent(this, UserDetail::class.java))
             Toast.makeText(this, "welcome back", Toast.LENGTH_SHORT).show()
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val launcher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { it ->
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
                 handleResults(task)

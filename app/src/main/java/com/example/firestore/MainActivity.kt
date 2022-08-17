@@ -63,24 +63,16 @@ class MainActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     Toast.makeText(this, "created account successfully !", Toast.LENGTH_SHORT)
                         .show()
-                    sendEmailVerification()
-                    startActivity(Intent(this, UserDetail::class.java))
+                    val intent = Intent(this, UserDetail::class.java)
+                    intent.putExtra("email", auth.currentUser?.email)
+                    intent.putExtra("name", auth.currentUser?.displayName)
+                    intent.putExtra("profile",auth.currentUser?.photoUrl)
+                    startActivity(intent)
                     finish()
                 } else {
                     Toast.makeText(this, "Account is already exist... !", Toast.LENGTH_SHORT).show()
                 }
             }
-    }
-
-    private fun sendEmailVerification() {
-        val userEmail = binding.email.text.toString().trim()
-        user.let {
-            it.sendEmailVerification().addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "email sent to $userEmail", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
 

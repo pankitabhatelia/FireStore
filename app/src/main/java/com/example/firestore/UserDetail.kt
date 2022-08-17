@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 import com.example.firestore.databinding.ActivityUserDetailBinding
 import com.google.firebase.auth.FirebaseAuth
 
@@ -23,7 +24,7 @@ class UserDetail : AppCompatActivity() {
         binding.tvUserEmail.text = email
         binding.tvUserName.text = name
         binding.tvGivenName.text = givenName
-        binding.ivProfile.setImageURI((intent.getStringExtra("profile"))?.toUri())
+        Glide.with(this).load(intent.getStringExtra("profile")?.toUri()).into(binding.ivProfile)
         binding.btnSignOut.setOnClickListener {
             auth.signOut()
             startActivity(Intent(this, MainActivity::class.java))

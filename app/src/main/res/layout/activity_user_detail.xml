@@ -1,72 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="userdata"
+            type="viewmodel.UserViewModel" />
+    </data>
+
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".UserDetail">
+    android:background="@color/dark_blue_shade"
+    tools:context="activities.UserDetail">
 
     <ImageView
         android:id="@+id/ivProfile"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginTop="40dp"
-        android:src="@drawable/ic_google"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/camera"
+        android:contentDescription="@string/cast_expanded_controller_ad_image_description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvUserName"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilFirstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
         android:layout_marginTop="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="24sp"
-        android:text="User"
+        app:error="@{userdata.firstNameError}"
+        app:errorTextAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+        app:errorTextColor="@color/DarkRed"
+        app:helperTextTextColor="@color/DarkRed"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ivProfile" />
+        app:layout_constraintTop_toBottomOf="@+id/ivProfile">
 
-    <TextView
-        android:id="@+id/tvUserEmail"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="24sp"
-        android:text="Email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserName" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/firstName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="username"
+            android:background="@drawable/edittextborder"
+            android:backgroundTint="@color/dark_blue_shade_2"
+            android:text="@={userdata.firstName}"
+            android:hint="@string/firstname"
+            android:inputType="text"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray">
 
-    <TextView
-        android:id="@+id/tvGivenName"
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilLastName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
-        android:textSize="24sp"
-        android:text="Given Name"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        app:error="@{userdata.lastNameError}"
+        app:errorTextColor="@color/DarkRed"
+        app:helperTextTextColor="@color/DarkRed"
+        app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvUserEmail" />
+        app:layout_constraintTop_toBottomOf="@+id/tilFirstName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/lastName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="username"
+            android:background="@drawable/edittextborder"
+            android:backgroundTint="@color/dark_blue_shade_2"
+            android:hint="@string/last_name"
+            android:text="@={userdata.lastName}"
+            android:inputType="text"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilDateOfBirth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        app:error="@{userdata.dobError}"
+        app:errorTextColor="@color/DarkRed"
+        app:helperTextTextColor="@color/DarkRed"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilLastName">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/dob"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="username"
+            android:background="@drawable/edittextborder"
+            android:backgroundTint="@color/dark_blue_shade_2"
+            android:text="@={userdata.dateOfBirth}"
+            android:clickable="true"
+            android:drawableEnd="@drawable/calendar"
+            android:drawableTint="@color/white"
+            android:focusable="false"
+            android:hint="@string/date_of_birth"
+            android:inputType="text"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilGender"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        app:error="@{userdata.genderError}"
+        app:errorTextColor="@color/DarkRed"
+        app:helperTextTextColor="@color/DarkRed"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilDateOfBirth">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/gender"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:autofillHints="username"
+            android:background="@drawable/edittextborder"
+            android:backgroundTint="@color/dark_blue_shade_2"
+            android:hint="@string/gender"
+            android:text="@={userdata.gender}"
+            android:inputType="text"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilPhone"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="30dp"
+        android:layout_marginTop="10dp"
+        app:error="@{userdata.phoneError}"
+        app:errorTextColor="@color/DarkRed"
+        app:helperTextTextColor="@color/DarkRed"
+        app:hintEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tilGender">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="10dp"
+            android:autofillHints="username"
+            android:background="@drawable/edittextborder"
+            android:backgroundTint="@color/dark_blue_shade_2"
+            android:hint="@string/phone"
+            android:text="@={userdata.phoneNumber}"
+            android:inputType="number"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/white"
+            android:textColorHint="@android:color/darker_gray">
+
+        </com.google.android.material.textfield.TextInputEditText>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/btnSignOut"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/customsignup"
-        android:backgroundTint="@color/purple_500"
         android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
         android:layout_marginTop="30dp"
-        android:text="@string/log_out"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/customsignup"
+        android:backgroundTint="@color/light_blue_shade_1"
+        android:onClick="@{v->userdata.onClick()}"
+        android:text="Submit"
+        android:textSize="24sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/tvGivenName"
+        app:layout_constraintTop_toBottomOf="@+id/tilPhone"
         tools:layout_editor_absoluteX="30dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

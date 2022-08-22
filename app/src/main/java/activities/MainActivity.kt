@@ -1,10 +1,13 @@
-package com.example.firestore
+package activities
+
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.ViewModelProvider
+import com.example.firestore.R
 import com.example.firestore.databinding.ActivityMainBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -14,6 +17,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import viewmodel.UserViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -22,7 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding= ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         auth = FirebaseAuth.getInstance()
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+
     override fun onStart() {
         super.onStart()
         val user: FirebaseUser? = auth.currentUser
@@ -54,19 +59,18 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "welcome back", Toast.LENGTH_SHORT).show()
         }
     }
+
     private fun signIn() {
         val userEmail = binding.email.text.toString().trim()
         val userPassword = binding.password.text.toString().trim()
 
         auth.createUserWithEmailAndPassword(userEmail, userPassword)
-        .addOnCompleteListener { task ->
+            .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(this, "created account successfully !", Toast.LENGTH_SHORT)
                         .show()
                     val intent = Intent(this, UserDetail::class.java)
                     intent.putExtra("email", auth.currentUser?.email)
-                    intent.putExtra("name", auth.currentUser?.displayName)
-                    intent.putExtra("profile",auth.currentUser?.photoUrl)
                     startActivity(intent)
                     finish()
                 } else {
@@ -105,10 +109,8 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 val intent = Intent(this, UserDetail::class.java)
-                intent.putExtra("email", account.email)
                 intent.putExtra("name", account.displayName)
-                intent.putExtra("profile",account.photoUrl.toString())
-                intent.putExtra("givenName",account.givenName)
+                intent.putExtra("profile", account.photoUrl.toString())
                 startActivity(intent)
             } else {
                 Toast.makeText(this, it.exception.toString(), Toast.LENGTH_SHORT).show()

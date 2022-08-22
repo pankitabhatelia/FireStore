@@ -5,8 +5,10 @@
       <map>
         <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/drawable-v24/edittextborder.xml" value="0.1" />
         <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/drawable/customsignup.xml" value="0.1" />
+        <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/layout/activity_edit_user_detail.xml" value="0.20416666666666666" />
         <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/layout/activity_main.xml" value="0.25" />
-        <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/layout/activity_user_detail.xml" value="0.22" />
+        <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/layout/activity_register.xml" value="0.25" />
+        <entry key="..\:/PankitaWork/Android Projects/GitRepo/FireStore/app/src/main/res/layout/activity_user_detail.xml" value="0.25" />
       </map>
     </option>
   </component>

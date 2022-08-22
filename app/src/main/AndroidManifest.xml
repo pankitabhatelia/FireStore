@@ -10,10 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FireStore">
         <activity
-            android:name=".UserDetail"
+            android:name="activities.EditUserDetail"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="activities.UserDetail"
+            android:exported="false" />
+        <activity
+            android:name="activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -27,18 +27,12 @@ class UserViewModel : ViewModel() {
 
     fun onClick() {
             if(isValid()) {
-                   registerTofireStore(
-                            firstName.value.toString(),
-                            lastName.value.toString(),
-                            dateOfBirth.value.toString(),
-                            gender.value.toString(),
-                            image.value.toString(),
-                            phoneNumber.value!!.toInt()
-                    )
+                _toastMessage.value="Data is valid"
+
             }
     }
 
-     private fun registerTofireStore(
+      fun registerTofireStore(
         firstName: String,
         lastName: String,
         dateOfBirth: String,
@@ -91,7 +85,10 @@ class UserViewModel : ViewModel() {
         return false
     }
 
-    fun updateUser(){
+    fun setPhoto(selectedphoto: String) {
+        image.value = selectedphoto
+    }
+   /* fun updateUser(){
         database = FirebaseDatabase.getInstance().getReference("userdata")
         val user= mapOf<String,Any>(
             "firstName" to firstName,
@@ -109,7 +106,7 @@ class UserViewModel : ViewModel() {
             it.printStackTrace()
             _toastMessage.value="Failed to Update"
         }
-    }
+    }*/
 
 
 }

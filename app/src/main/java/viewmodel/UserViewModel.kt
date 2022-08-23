@@ -1,13 +1,11 @@
 package viewmodel
 
-import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.tasks.OnFailureListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
-import model.UserData
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 
 
 class UserViewModel : ViewModel() {
@@ -22,13 +20,14 @@ class UserViewModel : ViewModel() {
     val dobError: MutableLiveData<String?> = MutableLiveData()
     val genderError: MutableLiveData<String?> = MutableLiveData()
     val phoneError: MutableLiveData<String?> = MutableLiveData()
-    val user: MutableMap<String, Any> = HashMap()
+    private val user: MutableMap<String, Any> = HashMap()
     private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     val toastMessage: LiveData<String> = _toastMessage
+    private lateinit var database : DatabaseReference
 
     fun onClick() {
             if(isValid()) {
-                    registerTofireStore(
+                   registerTofireStore(
                             firstName.value.toString(),
                             lastName.value.toString(),
                             dateOfBirth.value.toString(),
@@ -39,7 +38,7 @@ class UserViewModel : ViewModel() {
             }
     }
 
-    private fun registerTofireStore(
+     private fun registerTofireStore(
         firstName: String,
         lastName: String,
         dateOfBirth: String,
@@ -57,10 +56,10 @@ class UserViewModel : ViewModel() {
         db.collection("userdata")
             .add(user)
             .addOnSuccessListener {
-                _toastMessage.value = "User is registered"
+                _toastMessage.value = "User detail is updated"
             }
             .addOnFailureListener {
-                _toastMessage.value = "User is not registered"
+                _toastMessage.value = "User detail is not updated"
             }
 
     }
@@ -91,29 +90,26 @@ class UserViewModel : ViewModel() {
         }
         return false
     }
-     fun updateUser(
-        firstName: String,
-        lastName: String,
-        dateOfBirth: String,
-        gender: String,
-        image: String,
-        phoneNumber: Int
-    ) {
-        val db = FirebaseFirestore.getInstance()
-        user["firstName"] = firstName
-        user["lastName"] = lastName
-        user["dateofbirth"] = dateOfBirth
-        user["gender"] = gender
-        user["image"] = image
-        user["phone"] = phoneNumber
-        db.collection("userdata")
-            .document("36GkLaGUYUSWtyKFk0eZ").update(user)
-            .addOnSuccessListener {
-                _toastMessage.value = "User data is updated"
-            }
-            .addOnFailureListener {
-                _toastMessage.value = "User data is not updated"
-            }
+
+    fun updateUser(){
+        database = FirebaseDatabase.getInstance().getReference("userdata")
+        val user= mapOf<String,Any>(
+            "firstName" to firstName,
+            "lastName" to lastName,
+            "dateofbirth" to dateOfBirth,
+            "gender" to gender,
+            "image" to image,
+            "phone" to phoneNumber
+
+        )
+        database.child(firstName.value.toString()).updateChildren(user).addOnSuccessListener {
+            _toastMessage.value="Successfuly Updated"
+
+        }.addOnFailureListener{
+            it.printStackTrace()
+            _toastMessage.value="Failed to Update"
+        }
     }
+
 
 }

@@ -1,6 +1,6 @@
 package activities
+
 import android.app.DatePickerDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -22,24 +22,16 @@ class UserDetail : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
         binding.lifecycleOwner = this
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+        userViewModel = ViewModelProvider(this)[UserViewModel::class.java]
         binding.userdata = userViewModel
         setContentView(binding.root)
-        var firstName:String=binding.firstName.text.toString()
-        var lastName:String=binding.lastName.text.toString()
-        var dateOfBirth:String=binding.dob.text.toString()
-        var gender:String=binding.gender.text.toString()
-        var number:Int=0
-
         auth = FirebaseAuth.getInstance()
-
-        Glide.with(this).load(intent.getStringExtra("profile")?.toUri()).circleCrop().into(binding.ivProfile)
+        val image = intent.getStringExtra("profile")
+        Glide.with(this).load(image?.toUri()).circleCrop().into(binding.ivProfile)
         val name = intent.getStringExtra("name")
-        userViewModel.firstName.value=name
-        binding.btnSignOut.setOnClickListener {
-            auth.signOut()
-            startActivity(Intent(this, MainActivity::class.java))
-        }
+        userViewModel.firstName.value = name
+        userViewModel.image.value = image
+
         val year = cal.get(Calendar.YEAR)
         val month = cal.get(Calendar.MONTH)
         val day = cal.get(Calendar.DAY_OF_MONTH)
@@ -49,17 +41,25 @@ class UserDetail : AppCompatActivity() {
         binding.dob.setOnClickListener {
             datePickerDialog.show()
         }
-        if(auth.currentUser!=null){
-            userViewModel.updateUser(firstName,lastName,dateOfBirth,gender,
-                intent.getStringExtra("profile")!!,number)
+        if(auth.currentUser!=null) {
+            userViewModel.firstName.value=name
+            userViewModel.lastName.value=binding.lastName.text.toString()
+            userViewModel.dateOfBirth.value=binding.dob.text.toString()
+            userViewModel.gender.value=binding.gender.text.toString()
+            userViewModel.image.value=image
+            userViewModel.phoneNumber.value=binding.phone.text.toString()
+            userViewModel.updateUser()
+            auth.signOut()
         }
         observer()
     }
-    private val dateSelectedListener = DatePickerDialog.OnDateSetListener { _, myear, mmonth, mdayOfMonth ->
-        //Just set age and date
-        val date = "$mdayOfMonth/${mmonth + 1}/$myear"
-        binding.dob.setText(date)
-    }
+
+    private val dateSelectedListener =
+        DatePickerDialog.OnDateSetListener { _, myear, mmonth, mdayOfMonth ->
+            val date = "$mdayOfMonth/${mmonth + 1}/$myear"
+            binding.dob.setText(date)
+        }
+
     private fun observer() {
         userViewModel.toastMessage.observe(this) {
             it?.let {

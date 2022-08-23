@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(intent)
                     finish()
                 } else {
-                    Toast.makeText(this, "Account is already exist... !", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -109,7 +109,7 @@ class MainActivity : AppCompatActivity() {
         auth.signInWithCredential(credential).addOnCompleteListener {
             if (it.isSuccessful) {
                 val intent = Intent(this, UserDetail::class.java)
-                intent.putExtra("name", account.displayName)
+                intent.putExtra("name", account.givenName)
                 intent.putExtra("profile", account.photoUrl.toString())
                 startActivity(intent)
             } else {

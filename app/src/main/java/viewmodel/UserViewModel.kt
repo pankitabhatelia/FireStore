@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 
 
 class UserViewModel : ViewModel() {
@@ -23,12 +21,17 @@ class UserViewModel : ViewModel() {
     private val user: MutableMap<String, Any> = HashMap()
     private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     val toastMessage: LiveData<String> = _toastMessage
-    private lateinit var database : DatabaseReference
 
     fun onClick() {
             if(isValid()) {
-                _toastMessage.value="Data is valid"
-
+                registerTofireStore(
+                    firstName.value.toString(),
+                    lastName.value.toString(),
+                    dateOfBirth.value.toString(),
+                    gender.value.toString(),
+                    image.value.toString(),
+                    phoneNumber.value!!.toInt()
+                )
             }
     }
 
@@ -88,25 +91,7 @@ class UserViewModel : ViewModel() {
     fun setPhoto(selectedphoto: String) {
         image.value = selectedphoto
     }
-   /* fun updateUser(){
-        database = FirebaseDatabase.getInstance().getReference("userdata")
-        val user= mapOf<String,Any>(
-            "firstName" to firstName,
-            "lastName" to lastName,
-            "dateofbirth" to dateOfBirth,
-            "gender" to gender,
-            "image" to image,
-            "phone" to phoneNumber
 
-        )
-        database.child(firstName.value.toString()).updateChildren(user).addOnSuccessListener {
-            _toastMessage.value="Successfuly Updated"
-
-        }.addOnFailureListener{
-            it.printStackTrace()
-            _toastMessage.value="Failed to Update"
-        }
-    }*/
 
 
 }

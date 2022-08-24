@@ -1,5 +1,4 @@
 package activities
-
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
@@ -17,7 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.firestore.FileUriUtils
@@ -27,6 +25,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.*
 import viewmodel.UserViewModel
 import java.io.File
 import java.util.*
@@ -42,7 +41,7 @@ class UserDetail : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var imagePath = ""
     private lateinit var googleSignInClient: GoogleSignInClient
-
+    private lateinit var databaseReference: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
@@ -56,12 +55,15 @@ class UserDetail : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
+        if(auth.currentUser==googleSignInClient)
+        {
+            getData()
+        }
         imageUri = createImageUri()!!
-        val image = intent.getStringExtra("profile")
-        Glide.with(this).load(image?.toUri()).circleCrop().into(binding.ivProfile)
-        val name = intent.getStringExtra("name")
-        userViewModel.firstName.value = name
-        userViewModel.image.value = image
+        val name=intent.getStringExtra("name")
+        userViewModel.firstName.value=name
+        val image=intent.getStringExtra("profile")
+        Glide.with(this).load(image).circleCrop().into(binding.ivProfile)
         binding.btnLogout.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
                 val intent = Intent(this, MainActivity::class.java)
@@ -186,5 +188,36 @@ class UserDetail : AppCompatActivity() {
             "com.example.firestore.fileProvider",
             image
         )
+    }
+
+    private fun getData(){
+        databaseReference=FirebaseDatabase.getInstance().getReference("userdata")
+        databaseReference.child("sqjtP96uEoXsziTZscLE").get().addOnSuccessListener {
+
+            if(it.exists()){
+
+                val firstName = it.child("firstName").value.toString()
+                val lastName = it.child("lastName").value.toString()
+                val dateOfBirth = it.child("dateofbirth").value.toString()
+                val gender=it.child("gender").value.toString()
+                val phone = it.child("phone").value.toString()
+                Toast.makeText(this, "Successfully retrieved the data!!", Toast.LENGTH_SHORT)
+                    .show()
+                userViewModel.firstName.value=firstName
+                userViewModel.lastName.value=lastName
+                userViewModel.dateOfBirth.value=dateOfBirth
+                userViewModel.gender.value=gender
+                userViewModel.phoneNumber.value=phone
+
+
+            }else{
+                Toast.makeText(this, "User does not exist!!", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }.addOnFailureListener{
+            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
+                .show()
+        }
     }
 }

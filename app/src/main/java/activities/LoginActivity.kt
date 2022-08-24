@@ -37,8 +37,6 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "created account successfully !", Toast.LENGTH_SHORT)
                     .show()
                 val intent = Intent(this, UserDetail::class.java)
-                intent.putExtra("firstName", auth.currentUser?.displayName)
-                intent.putExtra("profile",auth.currentUser?.photoUrl)
                 startActivity(intent)
                 finish()
             } else {

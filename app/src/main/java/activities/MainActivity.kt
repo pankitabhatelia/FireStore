@@ -1,9 +1,9 @@
 package activities
-
 import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.firestore.R
@@ -17,11 +17,13 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         binding.btnSignIn.setOnClickListener {
             Toast.makeText(this, "Logging In", Toast.LENGTH_SHORT).show()
             signInGoogle()
+
         }
 
         binding.btnCreate.setOnClickListener {
@@ -77,11 +80,18 @@ class MainActivity : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(account.idToken, null)
         auth.signInWithCredential(credential).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                val intent = Intent(this, UserDetail::class.java)
-                intent.putExtra("name", account.givenName)
-                intent.putExtra("profile", account.photoUrl.toString())
-                startActivity(intent)
-                finish()
+                if (!account.isExpired) {
+                    val intent = Intent(this, ShowUserDetail::class.java)
+                    startActivity(intent)
+                    finish()
+                }
+                else {
+                    val intent = Intent(this, UserDetail::class.java)
+                    intent.putExtra("name", account.givenName)
+                    intent.putExtra("profile", account.photoUrl.toString())
+                    startActivity(intent)
+                    finish()
+                }
             }
         }
     }
@@ -99,28 +109,59 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun signUpUser() {
+    private fun isvalidEmailAndPassword(): Boolean {
         val email = binding.email.text.toString().trim()
         val password = binding.password.text.toString().trim()
         val confirmPassword = binding.confirmPassword.text.toString().trim()
-
         if (email.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
             Toast.makeText(this, "Email and Password can't be blank", Toast.LENGTH_SHORT).show()
+        } else {
+            return true
         }
-
         if (password != confirmPassword) {
             Toast.makeText(this, "Password and Confirm Password do not match", Toast.LENGTH_SHORT)
                 .show()
+        } else {
+            return true
         }
-        auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+        return false
+    }
+
+    private fun signUpUser() {
+        val email = binding.email.text.toString().trim()
+        val password = binding.password.text.toString().trim()
+        if (isvalidEmailAndPassword()) {
+            auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "created account successfully !", Toast.LENGTH_SHORT)
+                        .show()
+                    val intent = Intent(this, UserDetail::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun getData(){
+        val rootRef = FirebaseFirestore.getInstance()
+        val allUsersRef = rootRef.collection("userdata")
+        val userNameQuery = allUsersRef.whereEqualTo("firstName", "Pankita")
+        userNameQuery.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                Toast.makeText(this, "created account successfully !", Toast.LENGTH_SHORT)
-                    .show()
-                val intent = Intent(this, UserDetail::class.java)
-                startActivity(intent)
-                finish()
+                for (document in task.result) {
+                    if (document.exists()) {
+                        Log.d("TAG", "username already exists")
+                        val userName = document.getString("username")
+                        //Do what you need to do with the userName
+                    } else {
+                        Log.d("TAG", "username does not exists")
+                    }
+                }
             } else {
-                Toast.makeText(this, task.exception.toString(), Toast.LENGTH_SHORT).show()
+                Log.d("TAG", "Error getting documents: ", task.exception)
             }
         }
     }

@@ -10,12 +10,14 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.firestore.FileUriUtils
@@ -55,23 +57,13 @@ class UserDetail : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
-        if(auth.currentUser==googleSignInClient)
-        {
-            getData()
-        }
+
         imageUri = createImageUri()!!
         val name=intent.getStringExtra("name")
         userViewModel.firstName.value=name
         val image=intent.getStringExtra("profile")
         Glide.with(this).load(image).circleCrop().into(binding.ivProfile)
-        binding.btnLogout.setOnClickListener {
-            googleSignInClient.signOut().addOnCompleteListener {
-                val intent = Intent(this, MainActivity::class.java)
-                Toast.makeText(this, "Logging Out", Toast.LENGTH_SHORT).show()
-                startActivity(intent)
-                finish()
-            }
-        }
+
         binding.ivProfile.setOnClickListener {
             val pictureDialog = AlertDialog.Builder(this)
             pictureDialog.setTitle("Select Action")
@@ -175,6 +167,16 @@ class UserDetail : AppCompatActivity() {
     private fun observer() {
         userViewModel.toastMessage.observe(this) {
             it?.let {
+                if(it=="User detail is updated"){
+                    val intent=Intent(this,ShowUserDetail::class.java)
+                    intent.putExtra("firstName",userViewModel.firstName.value.toString())
+                    intent.putExtra("lastName",userViewModel.lastName.value.toString())
+                    intent.putExtra("dateOfBirth",userViewModel.dateOfBirth.value.toString())
+                    intent.putExtra("gender",userViewModel.gender.value.toString())
+                    intent.putExtra("phone",userViewModel.phoneNumber.value.toString())
+                    intent.putExtra("profile",userViewModel.image.value?.toUri())
+                    startActivity(intent)
+                }
                 Toast.makeText(this, it, Toast.LENGTH_SHORT)
                     .show()
             }
@@ -190,20 +192,20 @@ class UserDetail : AppCompatActivity() {
         )
     }
 
-    private fun getData(){
+    /*private fun getData(){
         databaseReference=FirebaseDatabase.getInstance().getReference("userdata")
         databaseReference.child("sqjtP96uEoXsziTZscLE").get().addOnSuccessListener {
 
             if(it.exists()){
-
-                val firstName = it.child("firstName").value.toString()
+                val firstName = it.child("firstName").value
+                Log.d("TAG","firstName: $firstName")
                 val lastName = it.child("lastName").value.toString()
                 val dateOfBirth = it.child("dateofbirth").value.toString()
                 val gender=it.child("gender").value.toString()
                 val phone = it.child("phone").value.toString()
                 Toast.makeText(this, "Successfully retrieved the data!!", Toast.LENGTH_SHORT)
                     .show()
-                userViewModel.firstName.value=firstName
+                userViewModel.firstName.value=firstName.toString()
                 userViewModel.lastName.value=lastName
                 userViewModel.dateOfBirth.value=dateOfBirth
                 userViewModel.gender.value=gender
@@ -219,5 +221,5 @@ class UserDetail : AppCompatActivity() {
             Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
                 .show()
         }
-    }
+    }*/
 }

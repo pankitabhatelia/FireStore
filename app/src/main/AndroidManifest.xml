@@ -15,10 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FireStore">
         <activity
-            android:name="activities.LoginActivity"
+            android:name="activities.ShowUserDetail"
             android:exported="false" />
         <activity
-            android:name="activities.EditUserDetail"
+            android:name="activities.LoginActivity"
             android:exported="false" />
         <activity
             android:name="activities.UserDetail"

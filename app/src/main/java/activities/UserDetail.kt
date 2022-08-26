@@ -27,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import viewmodel.UserViewModel
 import java.io.File
@@ -43,7 +44,6 @@ class UserDetail : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var imagePath = ""
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var databaseReference: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
@@ -62,6 +62,7 @@ class UserDetail : AppCompatActivity() {
         val name=intent.getStringExtra("name")
         userViewModel.firstName.value=name
         val image=intent.getStringExtra("profile")
+        userViewModel.image.value=image
         Glide.with(this).load(image).circleCrop().into(binding.ivProfile)
 
         binding.ivProfile.setOnClickListener {
@@ -166,17 +167,18 @@ class UserDetail : AppCompatActivity() {
 
     private fun observer() {
         userViewModel.toastMessage.observe(this) {
+            if(it=="Data is inserted successfully"){
+                val intent=Intent(this,ShowUserDetail::class.java)
+                intent.putExtra("firstName",userViewModel.firstName.value.toString())
+                intent.putExtra("lastName",userViewModel.lastName.value.toString())
+                intent.putExtra("dateOfBirth",userViewModel.dateOfBirth.value.toString())
+                intent.putExtra("gender",userViewModel.gender.value.toString())
+                intent.putExtra("phone",userViewModel.phoneNumber.value.toString())
+                intent.putExtra("profile",userViewModel.image.value.toString())
+                startActivity(intent)
+                finish()
+            }
             it?.let {
-                if(it=="User detail is updated"){
-                    val intent=Intent(this,ShowUserDetail::class.java)
-                    intent.putExtra("firstName",userViewModel.firstName.value.toString())
-                    intent.putExtra("lastName",userViewModel.lastName.value.toString())
-                    intent.putExtra("dateOfBirth",userViewModel.dateOfBirth.value.toString())
-                    intent.putExtra("gender",userViewModel.gender.value.toString())
-                    intent.putExtra("phone",userViewModel.phoneNumber.value.toString())
-                    intent.putExtra("profile",userViewModel.image.value?.toUri())
-                    startActivity(intent)
-                }
                 Toast.makeText(this, it, Toast.LENGTH_SHORT)
                     .show()
             }
@@ -192,34 +194,5 @@ class UserDetail : AppCompatActivity() {
         )
     }
 
-    /*private fun getData(){
-        databaseReference=FirebaseDatabase.getInstance().getReference("userdata")
-        databaseReference.child("sqjtP96uEoXsziTZscLE").get().addOnSuccessListener {
 
-            if(it.exists()){
-                val firstName = it.child("firstName").value
-                Log.d("TAG","firstName: $firstName")
-                val lastName = it.child("lastName").value.toString()
-                val dateOfBirth = it.child("dateofbirth").value.toString()
-                val gender=it.child("gender").value.toString()
-                val phone = it.child("phone").value.toString()
-                Toast.makeText(this, "Successfully retrieved the data!!", Toast.LENGTH_SHORT)
-                    .show()
-                userViewModel.firstName.value=firstName.toString()
-                userViewModel.lastName.value=lastName
-                userViewModel.dateOfBirth.value=dateOfBirth
-                userViewModel.gender.value=gender
-                userViewModel.phoneNumber.value=phone
-
-
-            }else{
-                Toast.makeText(this, "User does not exist!!", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        }.addOnFailureListener{
-            Toast.makeText(this, "Failed", Toast.LENGTH_SHORT)
-                .show()
-        }
-    }*/
 }

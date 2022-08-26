@@ -3,10 +3,14 @@ package viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import model.UserData
 
 
 class UserViewModel : ViewModel() {
+    private lateinit var databaseReference: DatabaseReference
     var firstName: MutableLiveData<String?> = MutableLiveData()
     var lastName: MutableLiveData<String?> = MutableLiveData()
     var dateOfBirth: MutableLiveData<String?> = MutableLiveData()
@@ -24,40 +28,25 @@ class UserViewModel : ViewModel() {
 
     fun onClick() {
             if(isValid()) {
-                registerTofireStore(
-                    firstName.value.toString(),
-                    lastName.value.toString(),
-                    dateOfBirth.value.toString(),
-                    gender.value.toString(),
-                    image.value.toString(),
-                    phoneNumber.value!!.toInt()
-                )
+                registerTofireStore()
             }
     }
 
-      fun registerTofireStore(
-        firstName: String,
-        lastName: String,
-        dateOfBirth: String,
-        gender: String,
-        image: String,
-        phoneNumber: Int
-    ) {
-        val db = FirebaseFirestore.getInstance()
-        user["firstName"] = firstName
-        user["lastName"] = lastName
-        user["dateofbirth"] = dateOfBirth
-        user["gender"] = gender
-        user["image"] = image
-        user["phone"] = phoneNumber
-        db.collection("userdata")
-            .add(user)
-            .addOnSuccessListener {
-                _toastMessage.value = "User detail is updated"
-            }
-            .addOnFailureListener {
-                _toastMessage.value = "User detail is not updated"
-            }
+      fun registerTofireStore() {
+          val firstName2=firstName.value.toString()
+          val lastName2= lastName.value.toString()
+              val dateOfBirth2=dateOfBirth.value.toString()
+          val gender2=gender.value.toString()
+          val image2=image.value.toString()
+          val phoneNumber2=phoneNumber.value.toString()
+          databaseReference=FirebaseDatabase.getInstance().getReference("Users")
+          val userId=databaseReference.push().key!!
+          val userData=UserData(firstName2,lastName2,dateOfBirth2,gender2,image2,phoneNumber2.toInt())
+          databaseReference.child(userId).setValue(userData).addOnCompleteListener {
+              _toastMessage.value="Data is inserted successfully"
+          }.addOnFailureListener {
+              _toastMessage.value="Data is Failed to insert!!"
+          }
 
     }
 

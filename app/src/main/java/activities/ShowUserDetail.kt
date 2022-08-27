@@ -16,6 +16,7 @@ import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ShowUserDetail : AppCompatActivity() {
@@ -55,16 +56,16 @@ class ShowUserDetail : AppCompatActivity() {
     private fun getData(){
         auth= FirebaseAuth.getInstance()
         firebaseUSer= auth.currentUser!!
-        databaseReference= FirebaseDatabase.getInstance().getReference().child(firebaseUSer.uid)
+        databaseReference=
         Log.d("TAG",firebaseUSer.uid)
         databaseReference.addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 binding.tvFirstName.text = snapshot.child("firstName").value.toString()
                 Log.d("TAG",snapshot.child("firstName").value.toString())
-                binding.tvLastName.text = snapshot.child("firstName").value.toString()
-                binding.tvdateOfBirth.text = snapshot.child("firstName").value.toString()
-                binding.tvgender.text = snapshot.child("firstName").value.toString()
-                binding.tvPhone.text = snapshot.child("firstName").value.toString()
+                binding.tvLastName.text = "Pankita"
+                binding.tvdateOfBirth.text = "Pankita"
+                binding.tvgender.text = "Pankita"
+                binding.tvPhone.text = "Pankita"
             }
 
             override fun onCancelled(error: DatabaseError) {

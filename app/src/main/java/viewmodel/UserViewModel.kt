@@ -3,6 +3,8 @@ package viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
@@ -10,7 +12,9 @@ import model.UserData
 
 
 class UserViewModel : ViewModel() {
+    private lateinit var auth:FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
+    private lateinit var firebaseUser:FirebaseUser
     var firstName: MutableLiveData<String?> = MutableLiveData()
     var lastName: MutableLiveData<String?> = MutableLiveData()
     var dateOfBirth: MutableLiveData<String?> = MutableLiveData()
@@ -39,10 +43,11 @@ class UserViewModel : ViewModel() {
           val gender2=gender.value.toString()
           val image2=image.value.toString()
           val phoneNumber2=phoneNumber.value.toString()
+          auth= FirebaseAuth.getInstance()
+          firebaseUser=auth.currentUser!!
           databaseReference=FirebaseDatabase.getInstance().getReference("Users")
-          val userId=databaseReference.push().key!!
           val userData=UserData(firstName2,lastName2,dateOfBirth2,gender2,image2,phoneNumber2.toInt())
-          databaseReference.child(userId).setValue(userData).addOnCompleteListener {
+          databaseReference.child(firebaseUser.uid).setValue(userData).addOnCompleteListener {
               _toastMessage.value="Data is inserted successfully"
           }.addOnFailureListener {
               _toastMessage.value="Data is Failed to insert!!"

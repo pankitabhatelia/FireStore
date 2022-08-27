@@ -167,22 +167,14 @@ class UserDetail : AppCompatActivity() {
 
     private fun observer() {
         userViewModel.toastMessage.observe(this) {
-            if(it=="Data is inserted successfully"){
-                val intent=Intent(this,ShowUserDetail::class.java)
-                intent.putExtra("firstName",userViewModel.firstName.value.toString())
-                intent.putExtra("lastName",userViewModel.lastName.value.toString())
-                intent.putExtra("dateOfBirth",userViewModel.dateOfBirth.value.toString())
-                intent.putExtra("gender",userViewModel.gender.value.toString())
-                intent.putExtra("phone",userViewModel.phoneNumber.value.toString())
-                intent.putExtra("profile",userViewModel.image.value.toString())
-                startActivity(intent)
-                finish()
-            }
             it?.let {
                 Toast.makeText(this, it, Toast.LENGTH_SHORT)
                     .show()
             }
+            val intent = Intent(this, ShowUserDetail::class.java)
+            startActivity(intent)
         }
+
     }
 
     private fun createImageUri(): Uri? {

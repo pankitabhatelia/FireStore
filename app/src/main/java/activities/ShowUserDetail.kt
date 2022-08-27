@@ -8,15 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.firestore.R
 import com.example.firestore.databinding.ActivityShowUserDetailBinding
-import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
-import com.google.firebase.firestore.FirebaseFirestore
 
 
 class ShowUserDetail : AppCompatActivity() {
@@ -35,13 +32,6 @@ class ShowUserDetail : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
-        /*binding.tvFirstName.text = intent.getStringExtra("firstName")
-        binding.tvLastName.text = intent.getStringExtra("lastName")
-        binding.tvdateOfBirth.text = intent.getStringExtra("dateOfBirth")
-        binding.tvgender.text = intent.getStringExtra("gender")
-        binding.tvPhone.text = intent.getStringExtra("phone")*/
-        Glide.with(this).load(intent.getStringExtra("profile")).circleCrop()
-            .into(binding.imageview)
         getData()
         binding.btnLogOut.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
@@ -56,23 +46,32 @@ class ShowUserDetail : AppCompatActivity() {
     private fun getData(){
         auth= FirebaseAuth.getInstance()
         firebaseUSer= auth.currentUser!!
-        databaseReference=
+        databaseReference=FirebaseDatabase.getInstance().getReference("Users")
         Log.d("TAG",firebaseUSer.uid)
-        databaseReference.addValueEventListener(object: ValueEventListener {
+        val snapshot=databaseReference.child(firebaseUSer.uid).get()
+        snapshot.addOnSuccessListener {
+            binding.tvFirstName.text=it.child("firstName").value.toString()
+            binding.tvLastName.text=it.child("lastName").value.toString()
+            binding.tvdateOfBirth.text=it.child("dateOfBirth").value.toString()
+            binding.tvgender.text=it.child("gender").value.toString()
+            binding.tvPhone.text=it.child("number").value.toString()
+            Glide.with(this).load(it.child("image").value.toString()).circleCrop().into( binding.imageview)
+        }
+        /*addValueEventListener(object: ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 binding.tvFirstName.text = snapshot.child("firstName").value.toString()
                 Log.d("TAG",snapshot.child("firstName").value.toString())
-                binding.tvLastName.text = "Pankita"
-                binding.tvdateOfBirth.text = "Pankita"
-                binding.tvgender.text = "Pankita"
-                binding.tvPhone.text = "Pankita"
+                binding.tvLastName.text = snapshot.child("lastName").value.toString()
+                binding.tvdateOfBirth.text = snapshot.child("dateOfBirth").value.toString()
+                binding.tvgender.text = snapshot.child("gender").value.toString()
+                binding.tvPhone.text = snapshot.child("number").value.toString()
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Toast.makeText(this@ShowUserDetail, "Database Error", Toast.LENGTH_SHORT).show()
             }
 
-        })
+        })*/
 
     }
 }

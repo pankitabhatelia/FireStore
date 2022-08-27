@@ -1,4 +1,5 @@
 package activities
+
 import android.Manifest
 import android.app.Activity
 import android.app.AlertDialog
@@ -59,12 +60,11 @@ class UserDetail : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
 
         imageUri = createImageUri()!!
-        val name=intent.getStringExtra("name")
-        userViewModel.firstName.value=name
-        val image=intent.getStringExtra("profile")
-        userViewModel.image.value=image
+        val name = intent.getStringExtra("name")
+        userViewModel.firstName.value = name
+        val image = intent.getStringExtra("profile")
+        userViewModel.image.value = image
         Glide.with(this).load(image).circleCrop().into(binding.ivProfile)
-
         binding.ivProfile.setOnClickListener {
             val pictureDialog = AlertDialog.Builder(this)
             pictureDialog.setTitle("Select Action")

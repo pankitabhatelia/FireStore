@@ -50,28 +50,15 @@ class ShowUserDetail : AppCompatActivity() {
         Log.d("TAG",firebaseUSer.uid)
         val snapshot=databaseReference.child(firebaseUSer.uid).get()
         snapshot.addOnSuccessListener {
-            binding.tvFirstName.text=it.child("firstName").value.toString()
+            binding.tvFirstName.text= it.child("firstName").value.toString()
             binding.tvLastName.text=it.child("lastName").value.toString()
             binding.tvdateOfBirth.text=it.child("dateOfBirth").value.toString()
             binding.tvgender.text=it.child("gender").value.toString()
             binding.tvPhone.text=it.child("number").value.toString()
             Glide.with(this).load(it.child("image").value.toString()).circleCrop().into( binding.imageview)
+        }.addOnFailureListener {
+            Toast.makeText(this,"Failed to fetch the data!!",Toast.LENGTH_SHORT).show()
         }
-        /*addValueEventListener(object: ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                binding.tvFirstName.text = snapshot.child("firstName").value.toString()
-                Log.d("TAG",snapshot.child("firstName").value.toString())
-                binding.tvLastName.text = snapshot.child("lastName").value.toString()
-                binding.tvdateOfBirth.text = snapshot.child("dateOfBirth").value.toString()
-                binding.tvgender.text = snapshot.child("gender").value.toString()
-                binding.tvPhone.text = snapshot.child("number").value.toString()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@ShowUserDetail, "Database Error", Toast.LENGTH_SHORT).show()
-            }
-
-        })*/
 
     }
 }

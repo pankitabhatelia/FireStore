@@ -12,9 +12,9 @@ import model.UserData
 
 
 class UserViewModel : ViewModel() {
-    private lateinit var auth:FirebaseAuth
+    private lateinit var auth: FirebaseAuth
     private lateinit var databaseReference: DatabaseReference
-    private lateinit var firebaseUser:FirebaseUser
+    private lateinit var firebaseUser: FirebaseUser
     var firstName: MutableLiveData<String?> = MutableLiveData()
     var lastName: MutableLiveData<String?> = MutableLiveData()
     var dateOfBirth: MutableLiveData<String?> = MutableLiveData()
@@ -31,27 +31,34 @@ class UserViewModel : ViewModel() {
     val toastMessage: LiveData<String> = _toastMessage
 
     fun onClick() {
-            if(isValid()) {
-                registerTofireStore()
-            }
+        if (isValid()) {
+            registerTofireStore()
+        }
     }
 
-      fun registerTofireStore() {
-          val firstName2=firstName.value.toString()
-          val lastName2= lastName.value.toString()
-              val dateOfBirth2=dateOfBirth.value.toString()
-          val gender2=gender.value.toString()
-          val image2=image.value.toString()
-          val phoneNumber2=phoneNumber.value.toString()
-          auth= FirebaseAuth.getInstance()
-          firebaseUser=auth.currentUser!!
-          databaseReference=FirebaseDatabase.getInstance().getReference("Users")
-          val userData=UserData(firstName2,lastName2,dateOfBirth2,gender2,image2,phoneNumber2.toInt())
-          databaseReference.child(firebaseUser.uid).setValue(userData).addOnCompleteListener {
-              _toastMessage.value="Data is inserted successfully"
-          }.addOnFailureListener {
-              _toastMessage.value="Data is Failed to insert!!"
-          }
+    fun registerTofireStore() {
+        /*val firstName2=firstName.value?.toString()
+        val lastName2= lastName.value.toString()
+        val dateOfBirth2=dateOfBirth.value.toString()
+        val gender2=gender.value.toString()
+        val image2=image.value.toString()
+        val phoneNumber2=phoneNumber.value.toString()*/
+        auth = FirebaseAuth.getInstance()
+        firebaseUser = auth.currentUser!!
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        val userData = UserData(
+            firstName.value?.toString(),
+            lastName.value?.toString(),
+            dateOfBirth.value?.toString(),
+            gender.value?.toString(),
+            image.value?.toString(),
+            phoneNumber.value?.toString()?.toInt()
+        )
+        databaseReference.child(firebaseUser.uid).setValue(userData).addOnCompleteListener {
+            _toastMessage.value = "Data is inserted successfully"
+        }.addOnFailureListener {
+            _toastMessage.value = "Data is Failed to insert!!"
+        }
 
     }
 
@@ -85,7 +92,6 @@ class UserViewModel : ViewModel() {
     fun setPhoto(selectedphoto: String) {
         image.value = selectedphoto
     }
-
 
 
 }

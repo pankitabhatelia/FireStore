@@ -2,9 +2,9 @@ package model
 
 
 data class UserData(
-    var firstName: String?,
-    var lastName: String?,
-    var dateOfBirth: String?,
-    var gender: String?,
-    var image:String,
-    var number:Int)
+    var firstName: String?=null,
+    var lastName: String?=null,
+    var dateOfBirth: String?=null,
+    var gender: String?=null,
+    var image:String?=null,
+    var number:Int?=0)

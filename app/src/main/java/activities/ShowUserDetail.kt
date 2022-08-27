@@ -43,21 +43,23 @@ class ShowUserDetail : AppCompatActivity() {
 
         }
     }
-    private fun getData(){
-        auth= FirebaseAuth.getInstance()
-        firebaseUSer= auth.currentUser!!
-        databaseReference=FirebaseDatabase.getInstance().getReference("Users")
-        Log.d("TAG",firebaseUSer.uid)
-        val snapshot=databaseReference.child(firebaseUSer.uid).get()
+
+    private fun getData() {
+        auth = FirebaseAuth.getInstance()
+        firebaseUSer = auth.currentUser!!
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
+        Log.d("TAG", firebaseUSer.uid)
+        val snapshot = databaseReference.child(firebaseUSer.uid).get()
         snapshot.addOnSuccessListener {
-            binding.tvFirstName.text= it.child("firstName").value.toString()
-            binding.tvLastName.text=it.child("lastName").value.toString()
-            binding.tvdateOfBirth.text=it.child("dateOfBirth").value.toString()
-            binding.tvgender.text=it.child("gender").value.toString()
-            binding.tvPhone.text=it.child("number").value.toString()
-            Glide.with(this).load(it.child("image").value.toString()).circleCrop().into( binding.imageview)
+            binding.tvFirstName.text = it.child("firstName").value.toString()
+            binding.tvLastName.text = it.child("lastName").value.toString()
+            binding.tvdateOfBirth.text = it.child("dateOfBirth").value.toString()
+            binding.tvgender.text = it.child("gender").value.toString()
+            binding.tvPhone.text = it.child("number").value.toString()
+            Glide.with(this).load(it.child("image").value.toString()).circleCrop()
+                .into(binding.imageview)
         }.addOnFailureListener {
-            Toast.makeText(this,"Failed to fetch the data!!",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Failed to fetch the data!!", Toast.LENGTH_SHORT).show()
         }
 
     }

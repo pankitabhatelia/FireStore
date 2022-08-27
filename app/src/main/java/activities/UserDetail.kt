@@ -11,14 +11,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.firestore.FileUriUtils
@@ -28,7 +26,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.*
 import viewmodel.UserViewModel
 import java.io.File
@@ -44,6 +41,7 @@ class UserDetail : AppCompatActivity() {
     private val galleryRequestCode = 2
     private lateinit var imageUri: Uri
     private var imagePath = ""
+    private lateinit var databaseReference: DatabaseReference
     private lateinit var googleSignInClient: GoogleSignInClient
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +56,7 @@ class UserDetail : AppCompatActivity() {
             .build()
         googleSignInClient = GoogleSignIn.getClient(this, gso)
         auth = FirebaseAuth.getInstance()
-
+        databaseReference = FirebaseDatabase.getInstance().getReference("Users")
         imageUri = createImageUri()!!
         val name = intent.getStringExtra("name")
         userViewModel.firstName.value = name
@@ -92,7 +90,10 @@ class UserDetail : AppCompatActivity() {
         binding.dob.setOnClickListener {
             datePickerDialog.show()
         }
-
+        if (auth.currentUser?.isEmailVerified == true) {
+            val intent = Intent(this, ShowUserDetail::class.java)
+            startActivity(intent)
+        }
         observer()
     }
 
@@ -174,7 +175,6 @@ class UserDetail : AppCompatActivity() {
             val intent = Intent(this, ShowUserDetail::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun createImageUri(): Uri? {

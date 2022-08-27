@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
 import model.UserData
 
 
@@ -26,7 +25,6 @@ class UserViewModel : ViewModel() {
     val dobError: MutableLiveData<String?> = MutableLiveData()
     val genderError: MutableLiveData<String?> = MutableLiveData()
     val phoneError: MutableLiveData<String?> = MutableLiveData()
-    private val user: MutableMap<String, Any> = HashMap()
     private val _toastMessage: MutableLiveData<String> = MutableLiveData()
     val toastMessage: LiveData<String> = _toastMessage
 
@@ -36,13 +34,7 @@ class UserViewModel : ViewModel() {
         }
     }
 
-    fun registerTofireStore() {
-        /*val firstName2=firstName.value?.toString()
-        val lastName2= lastName.value.toString()
-        val dateOfBirth2=dateOfBirth.value.toString()
-        val gender2=gender.value.toString()
-        val image2=image.value.toString()
-        val phoneNumber2=phoneNumber.value.toString()*/
+    private fun registerTofireStore() {
         auth = FirebaseAuth.getInstance()
         firebaseUser = auth.currentUser!!
         databaseReference = FirebaseDatabase.getInstance().getReference("Users")
@@ -59,7 +51,6 @@ class UserViewModel : ViewModel() {
         }.addOnFailureListener {
             _toastMessage.value = "Data is Failed to insert!!"
         }
-
     }
 
     private fun isValid(): Boolean {

@@ -21,4 +21,6 @@
     <string name="phone">Phone</string>
     <string name="send_notification">Send Notification</string>
     <string name="welcome_to_home">Welcome To Home</string>
+    <string name="title">Title</string>
+    <string name="message">Message</string>
 </resources>

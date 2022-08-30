@@ -28,7 +28,7 @@ class NotificationActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnNotification).setOnClickListener {
             val intent = Intent(this, AfterNotificationActivity::class.java)
             val pendingIntent =
-                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 notificationChannel =
                     NotificationChannel(channelId, description, NotificationManager.IMPORTANCE_HIGH)
